@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useResumeStore } from '../../../store/resumeStore';
 import { EducationItem } from '../../../types/resume';
+import EndDatePicker from '../../ui/EndDatePicker';
 
 const EducationEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
   const { data, addModuleItem, updateModuleItem, deleteModuleItem } = useResumeStore();
@@ -71,8 +72,11 @@ const EducationEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
                   <input className={inputClass} type="month" value={item.startDate} onChange={(e) => updateModuleItem(moduleId, item.id, { startDate: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">毕业时间</label>
-                  <input className={inputClass} type="month" value={item.endDate} onChange={(e) => updateModuleItem(moduleId, item.id, { endDate: e.target.value })} />
+                  <EndDatePicker
+                    value={item.endDate}
+                    onChange={(val) => updateModuleItem(moduleId, item.id, { endDate: val })}
+                    inputClass={inputClass}
+                  />
                 </div>
               </div>
               <div>

@@ -105,15 +105,17 @@ function renderDarkContent(module: any, color: string, lineHeight: number): Reac
     case 'internship':
       return (module as ExperienceModule).items.map((item) => (
         <div key={item.id} style={{ marginBottom: '1.1em', paddingLeft: '12px', borderLeft: `2px solid ${color}30` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
-              <span style={{ color: '#cbd5e1', fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
-              {item.position && (
-                <span style={{ color, fontSize: '0.92em' }}>{item.position}</span>
-              )}
-            </div>
-            <span style={{ ...mutedStyle, flexShrink: 0, marginLeft: '0.5em' }}>{formatDate(item.startDate)} ~ {formatDate(item.endDate)}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ color: '#cbd5e1', fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
+            <span style={{ ...mutedStyle, flexShrink: 0, marginLeft: '0.5em' }}>
+              {formatDate(item.startDate)} ~ {formatDate(item.endDate)}
+            </span>
           </div>
+          {(item.department || item.position) && (
+            <div style={{ fontSize: '0.85em', color: '#64748b', marginTop: '2px' }}>
+              {[item.department, item.position].filter(Boolean).join(' · ')}
+            </div>
+          )}
           {item.description && (
             <div className="resume-rich-text" style={{ ...mutedStyle, marginTop: '6px', lineHeight }}
               dangerouslySetInnerHTML={{ __html: item.description }} />
@@ -123,17 +125,11 @@ function renderDarkContent(module: any, color: string, lineHeight: number): Reac
 
     case 'skills':
       return (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {(module as SkillsModule).items.map((item) => (
-            <span key={item.id} style={{
-              background: `${color}15`, border: `1px solid ${color}40`,
-              borderRadius: '3px', padding: '0.15em 0.77em', fontSize: '0.85em',
-              color: '#94a3b8', fontFamily: 'monospace',
-            }}>
-              {item.name}
-            </span>
-          ))}
-        </div>
+        <div
+          className="resume-rich-text"
+          style={{ ...mutedStyle, lineHeight }}
+          dangerouslySetInnerHTML={{ __html: (module as SkillsModule).content }}
+        />
       );
 
     case 'project':
@@ -152,8 +148,18 @@ function renderDarkContent(module: any, color: string, lineHeight: number): Reac
             <div style={{ ...mutedStyle, marginTop: '2px' }}>{item.techStack}</div>
           )}
           {item.description && (
-            <div className="resume-rich-text" style={{ ...mutedStyle, marginTop: '6px', lineHeight }}
-              dangerouslySetInnerHTML={{ __html: item.description }} />
+            <>
+              <div style={{ fontSize: '0.77em', fontWeight: 600, color: '#475569', marginTop: '6px', marginBottom: '2px', fontFamily: 'monospace' }}>项目描述</div>
+              <div className="resume-rich-text" style={{ ...mutedStyle, lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.description }} />
+            </>
+          )}
+          {item.responsibilities && (
+            <>
+              <div style={{ fontSize: '0.77em', fontWeight: 600, color: '#475569', marginTop: '6px', marginBottom: '2px', fontFamily: 'monospace' }}>核心工作内容</div>
+              <div className="resume-rich-text" style={{ ...mutedStyle, lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.responsibilities }} />
+            </>
           )}
         </div>
       ));

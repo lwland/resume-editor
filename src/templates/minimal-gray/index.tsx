@@ -116,17 +116,17 @@ function renderContent(module: any, color: string, lineHeight: number): React.Re
     case 'internship':
       return (module as ExperienceModule).items.map((item) => (
         <div key={item.id} style={{ marginBottom: '1.1em' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
-              <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
-              {item.position && (
-                <span style={{ color, fontSize: '0.92em' }}>{item.position}</span>
-              )}
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
             <span style={{ color: '#9ca3af', fontSize: '0.85em', flexShrink: 0, marginLeft: '0.5em' }}>
               {formatDate(item.startDate)} — {formatDate(item.endDate)}
             </span>
           </div>
+          {(item.department || item.position) && (
+            <div style={{ fontSize: '0.85em', color: '#6b7280', marginTop: '2px' }}>
+              {[item.department, item.position].filter(Boolean).join(' · ')}
+            </div>
+          )}
           {item.description && (
             <div className="resume-rich-text"
               style={{ fontSize: '0.85em', color: '#6b7280', marginTop: '6px', lineHeight }}
@@ -137,16 +137,11 @@ function renderContent(module: any, color: string, lineHeight: number): React.Re
 
     case 'skills':
       return (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {(module as SkillsModule).items.map((item) => (
-            <span key={item.id} style={{
-              border: '1px solid #d1d5db', borderRadius: '2px',
-              padding: '0.15em 0.77em', fontSize: '0.85em', color: '#374151',
-            }}>
-              {item.name}
-            </span>
-          ))}
-        </div>
+        <div
+          className="resume-rich-text"
+          style={{ fontSize: '0.92em', color: '#6b7280', lineHeight }}
+          dangerouslySetInnerHTML={{ __html: (module as SkillsModule).content }}
+        />
       );
 
     case 'project':
@@ -167,9 +162,20 @@ function renderContent(module: any, color: string, lineHeight: number): React.Re
             <div style={{ color: '#6b7280', fontSize: '0.85em', marginTop: '2px' }}>{item.techStack}</div>
           )}
           {item.description && (
-            <div className="resume-rich-text"
-              style={{ fontSize: '0.85em', color: '#6b7280', marginTop: '6px', lineHeight }}
-              dangerouslySetInnerHTML={{ __html: item.description }} />
+            <>
+              <div style={{ fontSize: '0.77em', fontWeight: 600, color: '#9ca3af', marginTop: '6px', marginBottom: '2px' }}>项目描述</div>
+              <div className="resume-rich-text"
+                style={{ fontSize: '0.85em', color: '#6b7280', lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.description }} />
+            </>
+          )}
+          {item.responsibilities && (
+            <>
+              <div style={{ fontSize: '0.77em', fontWeight: 600, color: '#9ca3af', marginTop: '6px', marginBottom: '2px' }}>核心工作内容</div>
+              <div className="resume-rich-text"
+                style={{ fontSize: '0.85em', color: '#6b7280', lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.responsibilities }} />
+            </>
           )}
         </div>
       ));

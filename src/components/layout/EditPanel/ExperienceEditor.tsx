@@ -3,6 +3,7 @@ import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useResumeStore } from '../../../store/resumeStore';
 import { ExperienceItem } from '../../../types/resume';
 import RichTextEditor from '../../ui/RichTextEditor';
+import EndDatePicker from '../../ui/EndDatePicker';
 
 const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
   const { data, addModuleItem, updateModuleItem, deleteModuleItem } = useResumeStore();
@@ -14,6 +15,7 @@ const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
     const newItem: ExperienceItem = {
       id: `exp-${Date.now()}`,
       company: '',
+      department: '',
       position: '',
       startDate: '',
       endDate: '',
@@ -52,6 +54,10 @@ const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
                 <input className={inputClass} value={item.company} placeholder="公司名称" onChange={(e) => updateModuleItem(moduleId, item.id, { company: e.target.value })} />
               </div>
               <div>
+                <label className="block text-xs text-slate-500 mb-1">所在部门</label>
+                <input className={inputClass} value={item.department ?? ''} placeholder="如：技术中台部、搜索推荐组" onChange={(e) => updateModuleItem(moduleId, item.id, { department: e.target.value })} />
+              </div>
+              <div>
                 <label className="block text-xs text-slate-500 mb-1">职位名称</label>
                 <input className={inputClass} value={item.position} placeholder="如：Java 后端工程师" onChange={(e) => updateModuleItem(moduleId, item.id, { position: e.target.value })} />
               </div>
@@ -61,8 +67,11 @@ const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
                   <input className={inputClass} type="month" value={item.startDate} onChange={(e) => updateModuleItem(moduleId, item.id, { startDate: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">结束时间</label>
-                  <input className={inputClass} type="month" value={item.endDate} onChange={(e) => updateModuleItem(moduleId, item.id, { endDate: e.target.value })} />
+                  <EndDatePicker
+                    value={item.endDate}
+                    onChange={(val) => updateModuleItem(moduleId, item.id, { endDate: val })}
+                    inputClass={inputClass}
+                  />
                 </div>
               </div>
               <div>

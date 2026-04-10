@@ -200,17 +200,19 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
     case 'internship':
       return (module as ExperienceModule).items.map((item) => (
         <div key={item.id} style={{ marginBottom: '1em' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.57em', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
-              <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
-              {item.position && (
-                <span style={{ color: color, fontSize: '0.93em', fontWeight: 500 }}>{item.position}</span>
-              )}
-            </div>
+          {/* 第1行：公司 ← → 时间 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
             <span style={{ color: '#64748b', fontSize: '0.86em', flexShrink: 0, marginLeft: '0.5em' }}>
               {formatDate(item.startDate)} - {formatDate(item.endDate)}
             </span>
           </div>
+          {/* 第2行：部门 · 职位 */}
+          {(item.department || item.position) && (
+            <div style={{ fontSize: '0.86em', color: '#64748b', marginTop: '2px' }}>
+              {[item.department, item.position].filter(Boolean).join(' · ')}
+            </div>
+          )}
           {item.description && (
             <div
               className="resume-rich-text"
@@ -223,42 +225,11 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
 
     case 'skills':
       return (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.57em' }}>
-          {(module as SkillsModule).items.map((item) => (
-            <span
-              key={item.id}
-              style={{
-                background: '#f0f7ff',
-                border: `1px solid ${color}30`,
-                color: '#334155',
-                borderRadius: '4px',
-                padding: '0.21em 0.71em',
-                fontSize: '0.86em',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              {item.name}
-              {item.level && (
-                <span style={{ display: 'flex', gap: '2px' }}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        background: i < (item.level ?? 0) ? color : '#e2e8f0',
-                        display: 'inline-block',
-                      }}
-                    />
-                  ))}
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
+        <div
+          className="resume-rich-text"
+          style={{ fontSize: '0.93em', color: '#475569', lineHeight }}
+          dangerouslySetInnerHTML={{ __html: (module as SkillsModule).content }}
+        />
       );
 
     case 'project':
@@ -281,11 +252,24 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
             </div>
           )}
           {item.description && (
-            <div
-              className="resume-rich-text"
-              style={{ fontSize: '0.86em', color: '#475569', marginTop: '6px', lineHeight }}
-              dangerouslySetInnerHTML={{ __html: item.description }}
-            />
+            <>
+              <div style={{ fontSize: '0.79em', fontWeight: 600, color: '#64748b', marginTop: '6px', marginBottom: '2px' }}>项目描述</div>
+              <div
+                className="resume-rich-text"
+                style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.description }}
+              />
+            </>
+          )}
+          {item.responsibilities && (
+            <>
+              <div style={{ fontSize: '0.79em', fontWeight: 600, color: '#64748b', marginTop: '6px', marginBottom: '2px' }}>核心工作内容</div>
+              <div
+                className="resume-rich-text"
+                style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
+                dangerouslySetInnerHTML={{ __html: item.responsibilities }}
+              />
+            </>
           )}
         </div>
       ));

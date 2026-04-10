@@ -86,6 +86,7 @@ export interface EducationModule extends BaseModule {
 export interface ExperienceItem {
   id: string;
   company: string;
+  department?: string; // 部门
   position: string;
   startDate: string;
   endDate: string;
@@ -97,15 +98,9 @@ export interface ExperienceModule extends BaseModule {
   items: ExperienceItem[];
 }
 
-export interface SkillItem {
-  id: string;
-  name: string;
-  level?: number; // 1~5
-}
-
 export interface SkillsModule extends BaseModule {
   type: 'skills';
-  items: SkillItem[];
+  content: string; // 富文本内容
 }
 
 export interface ProjectItem {
@@ -115,7 +110,8 @@ export interface ProjectItem {
   startDate: string;
   endDate: string;
   techStack: string;
-  description: string;
+  description: string;       // 项目描述（背景/介绍）
+  responsibilities: string;  // 核心工作内容
 }
 
 export interface ProjectModule extends BaseModule {

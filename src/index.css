@@ -22,14 +22,21 @@ body {
   margin: 0 0 4px 0;
 }
 
-.tiptap-editor ul,
+.tiptap-editor ul {
+  padding-left: 20px;
+  margin: 4px 0;
+  list-style-type: disc;
+}
+
 .tiptap-editor ol {
   padding-left: 20px;
   margin: 4px 0;
+  list-style-type: decimal;
 }
 
 .tiptap-editor li {
   margin: 2px 0;
+  display: list-item;
 }
 
 .tiptap-editor strong {
@@ -41,14 +48,21 @@ body {
   margin: 0 0 4px 0;
 }
 
-.resume-rich-text ul,
+.resume-rich-text ul {
+  padding-left: 18px;
+  margin: 4px 0;
+  list-style-type: disc;
+}
+
 .resume-rich-text ol {
   padding-left: 18px;
   margin: 4px 0;
+  list-style-type: decimal;
 }
 
 .resume-rich-text li {
   margin: 2px 0;
+  display: list-item;
 }
 
 /* 自定义滚动条 */

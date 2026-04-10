@@ -70,12 +70,8 @@ const initialData: ResumeData = {
       title: '专业技能',
       visible: true,
       order: 1,
-      items: [
-        { id: 'skill-1', name: 'Java / Spring Boot', level: 5 },
-        { id: 'skill-2', name: 'MySQL / Redis', level: 4 },
-        { id: 'skill-3', name: 'Docker / Kubernetes', level: 3 },
-        { id: 'skill-4', name: 'Vue.js / React', level: 3 },
-      ],
+      content:
+        '<ul><li><strong>编程语言：</strong>Java / Python / TypeScript，熟悉 JVM 调优与多线程并发编程</li><li><strong>框架与中间件：</strong>Spring Boot / Spring Cloud / MyBatis，熟练使用 Redis、Kafka</li><li><strong>数据库：</strong>MySQL（索引优化、分库分表）、Redis、MongoDB</li><li><strong>DevOps：</strong>Docker / Kubernetes / Jenkins，有持续集成与容器化部署经验</li></ul>',
     },
     {
       id: 'experience',
@@ -87,6 +83,7 @@ const initialData: ResumeData = {
         {
           id: 'exp-1',
           company: '字节跳动',
+          department: '抖音推荐技术部',
           position: '后端开发工程师',
           startDate: '2021-07',
           endDate: '至今',
@@ -127,8 +124,9 @@ const initialData: ResumeData = {
           startDate: '2022-03',
           endDate: '2022-09',
           techStack: 'Spring Boot / Redis / MySQL / Vue.js',
-          description:
-            '<ul><li>设计并实现支持百万级任务的分布式调度系统</li><li>采用一致性哈希算法实现负载均衡，系统可用性达 99.9%</li></ul>',
+          description: '<p>支持百万级任务的企业级分布式调度系统，服务于公司内部 20+ 业务线，覆盖定时任务、事件驱动等调度场景。</p>',
+          responsibilities:
+            '<ul><li>主导系统架构设计，采用一致性哈希算法实现负载均衡，系统可用性达 99.9%</li><li>实现任务分片与故障转移机制，单节点故障恢复时间缩短至 3 秒内</li><li>搭建可视化监控大盘，任务执行状态实时可见，排障效率提升 60%</li></ul>',
         },
       ],
     },
