@@ -1,6 +1,5 @@
 import React from 'react';
-import { Phone, Mail, User, Briefcase } from 'lucide-react';
-import { ResumeData, EducationModule, ExperienceModule, SkillsModule, ProjectModule, AwardModule, SummaryModule, CustomModule, HeaderStyle } from '../../types/resume';
+import { ResumeData, EducationModule, ExperienceModule, SkillsModule, ProjectModule, AwardModule, SummaryModule, CustomModule } from '../../types/resume';
 import dayjs from 'dayjs';
 
 interface TemplateProps {
@@ -13,41 +12,6 @@ const formatDate = (dateStr: string | undefined): string => {
   const d = dayjs(dateStr);
   return d.isValid() ? d.format('YYYY.MM') : dateStr;
 };
-
-// 头部信息项组件（支持图标/文字/纯内容三种展示风格）
-function HeaderInfoItem({
-  icon,
-  text,
-  style,
-  textPrefix,
-}: {
-  icon?: React.ReactNode;
-  text: string;
-  style: HeaderStyle | 'plain';
-  textPrefix?: string;
-}) {
-  const itemStyle: React.CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '4px',
-    marginRight: '16px',
-    fontSize: '0.86em',
-    color: '#f8fafc',
-    lineHeight: 1.4,
-  };
-
-  return (
-    <span style={itemStyle}>
-      {style === 'icon' && icon && (
-        <span style={{ display: 'flex', alignItems: 'center', opacity: 0.9 }}>{icon}</span>
-      )}
-      {style === 'text' && textPrefix && (
-        <span style={{ opacity: 0.75 }}>{textPrefix}：</span>
-      )}
-      {text}
-    </span>
-  );
-}
 
 const ClassicBlueTemplate: React.FC<TemplateProps> = ({ data }) => {
   const { meta, profile, modules } = data;
@@ -80,91 +44,71 @@ const ClassicBlueTemplate: React.FC<TemplateProps> = ({ data }) => {
         style={{
           background: color,
           margin: `-${meta.spacing.pagePadding}px -${meta.spacing.pagePadding}px 0`,
-          padding: `28px ${meta.spacing.pagePadding}px 24px`,
+          padding: `14px ${meta.spacing.pagePadding}px 14px`,
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
+          gap: '16px',
         }}
       >
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6em', marginBottom: '5px' }}>
+            <div style={{ fontSize: '1.3em', fontWeight: 700, letterSpacing: '2px' }}>
+              {profile.name || '姓名'}
+            </div>
+            {showJobTarget && (
+              <div style={{ fontSize: '0.93em', opacity: 0.85 }}>
+                {profile.jobTarget}
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 4px', fontSize: '0.86em', color: '#f8fafc' }}>
+            {[
+              profile.phone && sf.phone !== false ? { prefix: 'Tel', text: profile.phone } : null,
+              profile.email && sf.email !== false ? { prefix: 'Email', text: profile.email } : null,
+              profile.gender && sf.gender !== false ? { prefix: null, text: profile.gender } : null,
+              profile.experienceYears && sf.experienceYears !== false ? { prefix: null, text: profile.experienceYears } : null,
+              profile.politicalStatus && sf.politicalStatus !== false ? { prefix: null, text: profile.politicalStatus } : null,
+              ...profile.extras.map((e) => ({ prefix: e.label, text: e.value })),
+            ].filter(Boolean).map((item, idx, arr) => (
+              <React.Fragment key={idx}>
+                <span style={{ opacity: 0.95 }}>
+                  {item!.prefix && <span style={{ opacity: 0.7 }}>{item!.prefix}：</span>}
+                  {item!.text}
+                </span>
+                {idx < arr.length - 1 && <span style={{ opacity: 0.4, margin: '0 3px' }}>·</span>}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
         {showAvatar && (
           <img
             src={profile.avatar!}
             alt="头像"
             style={{
-              width: '80px',
-              height: '80px',
+              width: '64px',
+              height: '64px',
               borderRadius: '50%',
-              border: '3px solid rgba(255,255,255,0.6)',
+              border: '2px solid rgba(255,255,255,0.6)',
               objectFit: 'cover',
               flexShrink: 0,
             }}
           />
         )}
-        <div style={{ flex: 1 }}>
-          {/* 姓名：1.86em ≈ 26px @ 14px */}
-          <div style={{ fontSize: '1.86em', fontWeight: 700, letterSpacing: '2px', marginBottom: '8px' }}>
-            {profile.name || '姓名'}
-          </div>
-          {showJobTarget && (
-            <div style={{ fontSize: '0.93em', opacity: 0.85, marginBottom: '10px' }}>
-              {profile.jobTarget}
-            </div>
-          )}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 0' }}>
-            {profile.phone && sf.phone !== false && (
-              <HeaderInfoItem icon={<Phone size={11} />} text={profile.phone} style={meta.headerStyle} textPrefix="电话" />
-            )}
-            {profile.email && sf.email !== false && (
-              <HeaderInfoItem icon={<Mail size={11} />} text={profile.email} style={meta.headerStyle} textPrefix="邮箱" />
-            )}
-            {profile.gender && sf.gender !== false && (
-              <HeaderInfoItem icon={<User size={11} />} text={profile.gender} style={meta.headerStyle} textPrefix="性别" />
-            )}
-            {profile.experienceYears && sf.experienceYears !== false && (
-              <HeaderInfoItem icon={<Briefcase size={11} />} text={profile.experienceYears} style={meta.headerStyle} textPrefix="经验" />
-            )}
-            {profile.politicalStatus && sf.politicalStatus !== false && (
-              <HeaderInfoItem text={profile.politicalStatus} style="plain" />
-            )}
-            {profile.extras.map((e) => (
-              <HeaderInfoItem key={e.id} text={`${e.label}：${e.value}`} style="plain" />
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* 模块列表 */}
       <div style={{ marginTop: `${meta.spacing.moduleGap}px` }}>
         {visibleModules.map((module) => (
           <div key={module.id} style={{ marginBottom: `${meta.spacing.moduleGap}px` }}>
-            {/* 模块标题：1.14em ≈ 16px @ 14px，明显大于正文 */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '12px',
-                borderBottom: `2px solid ${color}`,
-                paddingBottom: '6px',
-              }}
-            >
-              <span
-                style={{
-                  width: '4px',
-                  height: '1.3em',
-                  background: color,
-                  borderRadius: '2px',
-                  display: 'inline-block',
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ fontSize: '1.14em', fontWeight: 700, color: '#1e293b', letterSpacing: '0.5px' }}>
+            <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'baseline' }}>
+              <span style={{ fontWeight: 700, color: color, marginRight: '6px', fontSize: '1.3em', lineHeight: 1, flexShrink: 0 }}>|</span>
+              <span style={{ fontSize: '1em', fontWeight: 700, color: '#1e293b', letterSpacing: '0.5px', whiteSpace: 'nowrap', flexShrink: 0 }}>
                 {module.title}
               </span>
+              <span style={{ color: `${color}60`, marginLeft: '8px', whiteSpace: 'nowrap', overflow: 'hidden', letterSpacing: '0px', minWidth: 0, flex: 1, display: 'block' }}>{'────────────────────────────────────────────────────────────────────────────────'}</span>
             </div>
 
-            {/* 模块内容 */}
             {renderModuleContent(module, color, meta.spacing.lineHeight)}
           </div>
         ))}
@@ -177,22 +121,18 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
   switch (module.type) {
     case 'education':
       return (module as EducationModule).items.map((item) => (
-        <div key={item.id} style={{ marginBottom: '0.9em' }}>
+        <div key={item.id} style={{ marginBottom: '0.4em' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {/* 条目主标题：1em，与根字体一致 */}
-            <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.school}</span>
-            <span style={{ color: '#64748b', fontSize: '0.86em' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5em', flexWrap: 'wrap' }}>
+              <span style={{ fontWeight: 600, fontSize: '0.93em' }}>{item.school}</span>
+              <span style={{ color: '#475569', fontSize: '0.93em' }}>
+                {item.degree} · {item.major}{item.description ? ` — ${item.description}` : ''}
+              </span>
+            </span>
+            <span style={{ color: '#64748b', fontSize: '0.86em', flexShrink: 0, marginLeft: '0.5em' }}>
               {formatDate(item.startDate)} - {formatDate(item.endDate)}
             </span>
           </div>
-          <div style={{ color: '#475569', fontSize: '0.93em', marginTop: '2px' }}>
-            {item.degree} · {item.major}
-          </div>
-          {item.description && (
-            <div style={{ color: '#64748b', fontSize: '0.86em', marginTop: '4px' }}>
-              {item.description}
-            </div>
-          )}
         </div>
       ));
 
@@ -200,19 +140,17 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
     case 'internship':
       return (module as ExperienceModule).items.map((item) => (
         <div key={item.id} style={{ marginBottom: '1em' }}>
-          {/* 第1行：公司 ← → 时间 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.company}</span>
-            <span style={{ color: '#64748b', fontSize: '0.86em', flexShrink: 0, marginLeft: '0.5em' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5em', flexWrap: 'wrap' }}>
+            <span style={{ fontWeight: 600, fontSize: '0.93em' }}>{item.company}</span>
+            {(item.department || item.position) && (
+              <span style={{ fontSize: '0.86em', color: '#64748b' }}>
+                {[item.department, item.position].filter(Boolean).join(' · ')}
+              </span>
+            )}
+            <span style={{ color: '#64748b', fontSize: '0.86em', flexShrink: 0, marginLeft: 'auto' }}>
               {formatDate(item.startDate)} - {formatDate(item.endDate)}
             </span>
           </div>
-          {/* 第2行：部门 · 职位 */}
-          {(item.department || item.position) && (
-            <div style={{ fontSize: '0.86em', color: '#64748b', marginTop: '2px' }}>
-              {[item.department, item.position].filter(Boolean).join(' · ')}
-            </div>
-          )}
           {item.description && (
             <div
               className="resume-rich-text"
@@ -227,7 +165,7 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
       return (
         <div
           className="resume-rich-text"
-          style={{ fontSize: '0.93em', color: '#475569', lineHeight }}
+          style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
           dangerouslySetInnerHTML={{ __html: (module as SkillsModule).content }}
         />
       );
@@ -237,7 +175,7 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
         <div key={item.id} style={{ marginBottom: '1em' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.57em', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
-              <span style={{ fontWeight: 600, fontSize: '1em' }}>{item.name}</span>
+              <span style={{ fontWeight: 600 }}>{item.name}</span>
               {item.role && (
                 <span style={{ color, fontWeight: 500, fontSize: '0.86em' }}>{item.role}</span>
               )}
@@ -252,24 +190,18 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
             </div>
           )}
           {item.description && (
-            <>
-              <div style={{ fontSize: '0.79em', fontWeight: 600, color: '#64748b', marginTop: '6px', marginBottom: '2px' }}>项目描述</div>
-              <div
-                className="resume-rich-text"
-                style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
-                dangerouslySetInnerHTML={{ __html: item.description }}
-              />
-            </>
+            <div
+              className="resume-rich-text"
+              style={{ fontSize: '0.86em', color: '#475569', lineHeight, marginTop: '6px' }}
+              dangerouslySetInnerHTML={{ __html: item.description }}
+            />
           )}
           {item.responsibilities && (
-            <>
-              <div style={{ fontSize: '0.79em', fontWeight: 600, color: '#64748b', marginTop: '6px', marginBottom: '2px' }}>核心工作内容</div>
-              <div
-                className="resume-rich-text"
-                style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
-                dangerouslySetInnerHTML={{ __html: item.responsibilities }}
-              />
-            </>
+            <div
+              className="resume-rich-text"
+              style={{ fontSize: '0.86em', color: '#475569', lineHeight, marginTop: '4px' }}
+              dangerouslySetInnerHTML={{ __html: item.responsibilities }}
+            />
           )}
         </div>
       ));
@@ -278,7 +210,7 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
       return (module as AwardModule).items.map((item) => (
         <div key={item.id} style={{ marginBottom: '0.57em', display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontWeight: 500, fontSize: '0.93em' }}>{item.name}</span>
+            <span style={{ fontWeight: 500 }}>{item.name}</span>
             {item.description && (
               <span style={{ color: '#64748b', fontSize: '0.86em', marginLeft: '8px' }}>
                 {item.description}
@@ -296,7 +228,7 @@ function renderModuleContent(module: any, color: string, lineHeight: number): Re
       return (
         <div
           className="resume-rich-text"
-          style={{ fontSize: '0.93em', color: '#475569', lineHeight }}
+          style={{ fontSize: '0.86em', color: '#475569', lineHeight }}
           dangerouslySetInnerHTML={{ __html: (module as SummaryModule | CustomModule).content }}
         />
       );

@@ -15,14 +15,14 @@ const initialData: ResumeData = {
     templateId: 'classic-blue',
     language: 'zh',
     font: 'default',
-    fontSize: 100,
+    fontSize: 90,
     themeColor: '#2563eb',
     layout: 'left',
     headerStyle: 'icon',
     spacing: {
-      moduleGap: 20,
-      lineHeight: 1.8,
-      pagePadding: 48,
+      moduleGap: 12,
+      lineHeight: 1.5,
+      pagePadding: 32,
     },
   },
   profile: {
@@ -196,9 +196,9 @@ interface ResumeStore {
 }
 
 const defaultSpacing: SpacingConfig = {
-  moduleGap: 20,
-  lineHeight: 1.8,
-  pagePadding: 48,
+  moduleGap: 12,
+  lineHeight: 1.5,
+  pagePadding: 32,
 };
 
 export const useResumeStore = create<ResumeStore>()(

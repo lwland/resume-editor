@@ -51,18 +51,43 @@ body {
 .resume-rich-text ul {
   padding-left: 18px;
   margin: 4px 0;
-  list-style-type: disc;
+  list-style: none;
+}
+
+.resume-rich-text ul li {
+  display: block;
+  position: relative;
+  padding-left: 14px;
+  margin: 2px 0;
+}
+
+.resume-rich-text ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .resume-rich-text ol {
-  padding-left: 18px;
+  padding-left: 0;
   margin: 4px 0;
-  list-style-type: decimal;
+  list-style: none;
+  counter-reset: item;
 }
 
-.resume-rich-text li {
+.resume-rich-text ol li {
+  display: block;
+  position: relative;
+  padding-left: 18px;
   margin: 2px 0;
-  display: list-item;
+  counter-increment: item;
+}
+
+.resume-rich-text ol li::before {
+  content: counter(item) '.';
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 /* 自定义滚动条 */
