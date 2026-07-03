@@ -188,6 +188,7 @@ interface ResumeStore {
   addModuleItem: (moduleId: string, item: any) => void;
   updateModuleItem: (moduleId: string, itemId: string, updates: any) => void;
   deleteModuleItem: (moduleId: string, itemId: string) => void;
+  reorderModuleItem: (moduleId: string, itemId: string, direction: 'up' | 'down') => void;
 
   // 重置
   resetData: () => void;
@@ -315,6 +316,27 @@ export const useResumeStore = create<ResumeStore>()(
                   ...m,
                   items: (m as any).items.filter((item: any) => item.id !== itemId),
                 } as ResumeModule;
+              }
+              return m;
+            }),
+          },
+        })),
+
+      reorderModuleItem: (moduleId, itemId, direction) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            modules: state.data.modules.map((m) => {
+              if (m.id !== moduleId) return m;
+              if ('items' in m) {
+                const items = [...(m as any).items];
+                const idx = items.findIndex((item: any) => item.id === itemId);
+                if (idx === -1) return m;
+                if (direction === 'up' && idx === 0) return m;
+                if (direction === 'down' && idx === items.length - 1) return m;
+                const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+                [items[idx], items[swapIdx]] = [items[swapIdx], items[idx]];
+                return { ...m, items } as ResumeModule;
               }
               return m;
             }),

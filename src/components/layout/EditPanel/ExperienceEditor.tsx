@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronUp, ArrowUp, ArrowDown } from 'lucide-react';
 import { useResumeStore } from '../../../store/resumeStore';
 import { ExperienceItem } from '../../../types/resume';
 import RichTextEditor from '../../ui/RichTextEditor';
 import EndDatePicker from '../../ui/EndDatePicker';
 
 const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
-  const { data, addModuleItem, updateModuleItem, deleteModuleItem } = useResumeStore();
+  const { data, addModuleItem, updateModuleItem, deleteModuleItem, reorderModuleItem } = useResumeStore();
   const module = data.modules.find((m) => m.id === moduleId);
   const items = module && 'items' in module ? (module as any).items as ExperienceItem[] : [];
   const [expanded, setExpanded] = useState<string | null>(items[0]?.id ?? null);
@@ -29,14 +29,28 @@ const ExperienceEditor: React.FC<{ moduleId: string }> = ({ moduleId }) => {
 
   return (
     <div className="p-4 space-y-3">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div key={item.id} className="border border-slate-200 rounded-lg overflow-hidden">
           <button
             className="w-full flex items-center justify-between px-3 py-2.5 bg-slate-50 hover:bg-slate-100"
             onClick={() => setExpanded(expanded === item.id ? null : item.id)}
           >
             <span className="text-sm font-medium text-slate-700">{item.company || '新增经历'}</span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={(e) => { e.stopPropagation(); reorderModuleItem(moduleId, item.id, 'up'); }}
+                disabled={index === 0}
+                className="text-slate-400 hover:text-slate-600 p-0.5 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ArrowUp size={13} />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); reorderModuleItem(moduleId, item.id, 'down'); }}
+                disabled={index === items.length - 1}
+                className="text-slate-400 hover:text-slate-600 p-0.5 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ArrowDown size={13} />
+              </button>
               <button
                 onClick={(e) => { e.stopPropagation(); deleteModuleItem(moduleId, item.id); }}
                 className="text-red-400 hover:text-red-500 p-0.5 rounded"
